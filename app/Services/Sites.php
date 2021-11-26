@@ -9,6 +9,8 @@ use Mockery\Exception;
 
 class Sites
 {
+    const PREFIX="s";
+
     public static function save($siteId, $advertiser)
     {
         $site = Site::find($siteId);
@@ -25,7 +27,7 @@ class Sites
         $result="";
         $blacklists = Advertiser::find($advertiserId)->blacklists()->has('site')->get();
         foreach ($blacklists as $blacklist) {
-            $result .= 's' . $blacklist->site->id . ", ";
+            $result .= self::PREFIX . $blacklist->site->id . ", ";
         }
         return $result;
     }

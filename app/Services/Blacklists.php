@@ -14,7 +14,8 @@ class Blacklists
 
     private static function validateLine($line)
     {
-        preg_match('/([ps]\d+,?\s?)+/', $line, $matches);
+        $prefixes=Publishers::PREFIX.Sites::PREFIX;
+        preg_match("/([<$prefixes>]\d+,?\s?)+/", $line, $matches);
         return $matches && $matches[0] == $line;
     }
 
@@ -31,15 +32,15 @@ class Blacklists
             throw new Exception("Advertiser does not exists.Requested id:" . $advertiserId);
         }
         if (!self::validateLine($blacklistLine)) {
-            throw new Exception("Invalid input line format. Input line must be like \"p1, s11\",60");
+            throw new Exception("Invalid input line format.");
         }
         $temp = explode(", ", $blacklistLine);
         foreach ($temp as $item) {
             $id = (int)substr($item, 1);
-            if ($item[0] == "s") {
+            if ($item[0] == Sites::PREFIX) {
                 Sites::save($id, $advertiser);
             }
-            if ($item[0] == "p") {
+            if ($item[0] == Publishers::PREFIX) {
                 Publishers::save($id, $advertiser);
             }
         }

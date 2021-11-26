@@ -20,7 +20,6 @@ class BlacklistController extends Controller
      */
     public function index()
     {
-        return BlacklistResourse::collection(Blacklist::all());
     }
 
     /**

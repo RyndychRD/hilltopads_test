@@ -9,6 +9,7 @@ use Mockery\Exception;
 
 class Publishers
 {
+    const PREFIX='p';
     public static function save($publisherId, $advertiser){
         $publisher = Publisher::find($publisherId);
         if(!$publisher){
@@ -23,7 +24,7 @@ class Publishers
         $result="";
         $blacklists = Advertiser::find($advertiserId)->blacklists()->has('publisher')->get();
         foreach ($blacklists as $blacklist) {
-            $result .= 'p' . $blacklist->publisher->id . ", ";
+            $result .= self::PREFIX . $blacklist->publisher->id . ", ";
         }
         return $result;
     }
