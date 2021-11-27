@@ -13,16 +13,20 @@ class Publishers
     public static function save($publisherId, $advertiser){
         $publisher = Publisher::find($publisherId);
         if(!$publisher){
-            throw new Exception("Publisher does not exist. Requested id:".$publisherId);
+            return false;
         }
         $blacklist=Blacklists::findOrCreate($advertiser,$publisher);
         $blacklist->publisher()->associate($publisher);
         $blacklist->save();
+        return true;
     }
 
     public static function get($advertiserId){
         $result="";
         $blacklists = Advertiser::find($advertiserId)->blacklists()->has('publisher')->get();
+        if(!$blacklists){
+            return false;
+        }
         foreach ($blacklists as $blacklist) {
             $result .= self::PREFIX . $blacklist->publisher->id . ", ";
         }

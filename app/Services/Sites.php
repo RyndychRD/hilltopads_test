@@ -15,11 +15,12 @@ class Sites
     {
         $site = Site::find($siteId);
         if(!$site){
-            throw new Exception("Site does not exist. Requested id:".$siteId);
+            return false;
         }
         $blacklist=Blacklists::findOrCreate($advertiser,$site);
         $blacklist->site()->associate($site);
         $blacklist->save();
+        return true;
 
     }
 

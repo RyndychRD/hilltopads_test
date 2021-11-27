@@ -15,7 +15,7 @@ class Blacklists
     private static function validateLine($line)
     {
         $prefixes=Publishers::PREFIX.Sites::PREFIX;
-        preg_match("/([<$prefixes>]\d+,?\s?)+/", $line, $matches);
+        preg_match("/([<$prefixes>]\d+,\s)*([<$prefixes>]\d+)/", $line, $matches);
         return $matches && $matches[0] == $line;
     }
 
@@ -29,29 +29,36 @@ class Blacklists
         $advertiser = Advertiser::find($advertiserId);
         $blacklistLine = trim($blacklistLine);
         if (!$advertiser) {
-            throw new Exception("Advertiser does not exists.Requested id:" . $advertiserId);
+            return json_encode(['status'=>'error', 'error_type'=>1, 'error_message'=>'Advertiser does not exists.Requested id:' . $advertiserId]);
         }
         if (!self::validateLine($blacklistLine)) {
-            throw new Exception("Invalid input line format.");
+            return json_encode(['status'=>'error', 'error_type'=>2,'error-message'=>"Invalid input line format."]);
         }
         $temp = explode(", ", $blacklistLine);
         foreach ($temp as $item) {
             $id = (int)substr($item, 1);
             if ($item[0] == Sites::PREFIX) {
-                Sites::save($id, $advertiser);
+                if(!Sites::save($id, $advertiser)){
+                    return json_encode(['status'=>'error', 'error_type'=>3,'error-message'=>"Site does not exist. Requested id:".$id]);
+                };
             }
             if ($item[0] == Publishers::PREFIX) {
-                Publishers::save($id, $advertiser);
+                if(!Publishers::save($id, $advertiser)){
+                    return json_encode(['status'=>'error', 'error_type'=>3,'error-message'=>"Publisher does not exist. Requested id:".$id]);
+                };
             }
         }
-        return "Success";
+        return json_encode(['status'=>'Success']);
     }
 
     public static function get($advertiserId)
     {
+        if(!Advertiser::find($advertiserId)){
+            return json_encode(['status'=>'error', 'error_type'=>1, 'error_message'=>'Advertiser does not exists.Requested id:' . $advertiserId]);
+        }
         $result = Sites::get($advertiserId);
         $result .= Publishers::get($advertiserId);
-        return substr($result, 0, -2);
+        return json_encode(['status'=>'Success', 'message'=> substr($result, 0, -2)]) ;
     }
 
 }
