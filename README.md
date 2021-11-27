@@ -1,4 +1,4 @@
-#Blacklist::save  
+<h1>Blacklist::save</h1>  
 Для вызова Blacklist::save необходимо отправить POST запрос по адресу  
 localhost:8000/api/blacklist  
 с телом JSON вида  
@@ -12,21 +12,21 @@ localhost:8000/api/blacklist
 {"status":"Success"}  
 при успешном выполнении  
   
-###Примеры Blacklist::save  
-#####1
+<h3>Примеры Blacklist::save </h3> 
+<h5>1</h5>
 Входной JSON:{
 "input_line": "s8, s2",
 "advertiser_id": 5
 }  
 Выходной JSON:{"status":"Success"}
 
-#####2
+<h5>2</h5>
 Входной JSON:{
 "input_line": "s8, s2",
 "advertiser_id": 500
 }  
 Выходной JSON:{"status":"error","error_type":1,"error_message":"Advertiser does not exists.Requested id:500"}
-#####3
+<h5>3</h5>
 Входной JSON:{
 "input_line": "p8, s200",
 "advertiser_id": 5
@@ -34,7 +34,7 @@ localhost:8000/api/blacklist
 Выходной JSON:{"status":"error","error_type":3,"error-message":"Site does not exist. Requested id:200"}
 
 
-#Blacklist::get
+<h1>Blacklist::get</h1>
 Для вызова Blacklist::get необходимо отправить GET запрос по адресу  
 localhost:8000/api/blacklist/{id} 
 После этого придет ответ вида  
@@ -43,19 +43,19 @@ localhost:8000/api/blacklist/{id}
 {"status":"Success","message":"s9, s3, s8, s2, p2, p4"} 
 при успешном выполнении
 
-###Примеры Blacklist::get
-#####1
+<h3>Примеры Blacklist::get</h3>
+<h5>1</h5>
 Входной url:localhost:8000/api/blacklist/500  
 Выходной JSON:{"status":"error","error_type":1,"error_message":"Advertiser does not exists.Requested id:500"}
 
-#####2
+<h5>2</h5>
 Входной url:localhost:8000/api/blacklist/5 
 Выходной JSON:{"status":"Success","message":"s9, s3, s8, s2, p2, p4, p8"}
 
-#####3
+<h5>3</h5>
 Входной url:localhost:8000/api/blacklist/3
 Выходной JSON:{"status":"Success","message":""}
   
-##P.S.
+<h2>P.S.</h2>
 При каждом запуске тестов база пересидируется новыми случайными значениями
 Ответы можно получить с помощью Postman или его аналога  
