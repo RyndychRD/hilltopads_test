@@ -29,22 +29,22 @@ class Blacklists
         $advertiser = Advertiser::find($advertiserId);
         $blacklistLine = trim($blacklistLine);
         if (!$advertiser) {
-            return json_encode(['status'=>'error', 'error_type'=>1, 'error_message'=>'Advertiser does not exists.Requested id:' . $advertiserId]);
+            return Errors::generateErrorNoAdvertiser($advertiserId);
         }
         if (!self::validateLine($blacklistLine)) {
-            return json_encode(['status'=>'error', 'error_type'=>2,'error-message'=>"Invalid input line format."]);
+            return Errors::generateErrorInvalidInput();
         }
         $temp = explode(", ", $blacklistLine);
         foreach ($temp as $item) {
             $id = (int)substr($item, 1);
             if ($item[0] == Sites::PREFIX) {
                 if(!Sites::save($id, $advertiser)){
-                    return json_encode(['status'=>'error', 'error_type'=>3,'error-message'=>"Site does not exist. Requested id:".$id]);
+                    return Errors::generateErrorNoSite($id);
                 };
             }
             if ($item[0] == Publishers::PREFIX) {
                 if(!Publishers::save($id, $advertiser)){
-                    return json_encode(['status'=>'error', 'error_type'=>3,'error-message'=>"Publisher does not exist. Requested id:".$id]);
+                    return Errors::generateErrorNoPublisher($id);
                 };
             }
         }
@@ -54,7 +54,7 @@ class Blacklists
     public static function get($advertiserId)
     {
         if(!Advertiser::find($advertiserId)){
-            return json_encode(['status'=>'error', 'error_type'=>1, 'error_message'=>'Advertiser does not exists.Requested id:' . $advertiserId]);
+            return Errors::generateErrorNoAdvertiser($advertiserId);
         }
         $result = Sites::get($advertiserId);
         $result .= Publishers::get($advertiserId);
