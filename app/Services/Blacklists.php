@@ -58,7 +58,8 @@ class Blacklists
         }
         $result = Sites::get($advertiserId);
         $result .= Publishers::get($advertiserId);
-        return json_encode(['status'=>'Success', 'message'=> substr($result, 0, -2)]) ;
+        $result=substr($result, 0, -2);
+        return json_encode(['status'=>'Success', 'message'=> $result?:""]) ;
     }
 
 }
